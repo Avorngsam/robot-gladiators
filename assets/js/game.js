@@ -2,7 +2,7 @@
 
 // function to generate a random numeric value
 var randomNumber = function(min, max) {
-  var value = Math.floor(Math.random() * (max - min + 1) + min);
+  var value = Math.floor(Math.random() * (max - min) + min);
 
   return value;
 };
@@ -14,6 +14,7 @@ var fightOrSkip = function() {
   
   if (promptFight === "" || promptFight === null) {
     window.alert("You need to provide a valid answer! Please try again.");
+
     return fightOrSkip();
     }
 
@@ -26,9 +27,9 @@ promptFight = promptFight.toLowerCase();
   
     // if yes (true), leave fight
     if (confirmSkip) {
-      window.alert(playerInfo.name + ' has decided to skip this fight. Goodbye!');
+      window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
       // subtract money from playerMoney for skipping
-      playerInfo.money = Math.max(0,playerInfo.money - 10);
+      playerInfo.money = Math.max(0, playerInfo.money - 10);
       
       // return true if player wants to leave
       return true;
@@ -50,6 +51,7 @@ var fight = function(enemy) {
     // generate random damage value based on player's attack power
     var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
+    // remove enemy health
     enemy.health = Math.max(0, enemy.health - damage)
     console.log(
       playerInfo.name + ' attacked ' + enemy.name + '. ' + enemy.name + ' now has ' + enemy.health + ' health remaining.'
@@ -95,16 +97,19 @@ var startGame = function() {
       
   // fight each enemy robot by looping over them and fighting them one at a time     
   for (var i = 0; i < enemyInfo.length; i++) {
+     // check player stats
+     console.log(playerInfo);
+     
    // if player is still alive, keep fighting
    if (playerInfo.health > 0) {
     // let player know what round they are in
-    window.alert('Welcome to Robot Gladiators! Round ' + (i + 1));
+    window.alert("Welcome to Robot Gladiators! Round " + (i + 1));
   
       // pick new enemy to fight based on the index of the enemyInfo array
       var pickedEnemyObj = enemyInfo[i];
   
       // reset enemy.health before starting new fight
-      pickedEnemyObj.health = randomNumber(40,60);
+      pickedEnemyObj.health = randomNumber(40, 60);
   
      // pass the pickedEnemyName variable's value into the fight function, where it will assume the value of the enemyName parameter
       fight(pickedEnemyObj);
@@ -153,35 +158,31 @@ var endGame = function() {
 
 // shop
 var shop = function() {
- // ask player what they'd like to do
- var shopOptionPrompt = window.prompt(
-     "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
- );
- 
- //use switch to carry out action
-    switch (shopOptionPrompt) {
-        case "REFILL": // new cass
-        case "refill":
-          playerInfo.refillHealth();
-          break;
-        case "UPGRADE":
-        case "upgrade":
-          playerInfo.upgradeAttack();
-          break;
-        case "LEAVE": // new case
-        case "leave":
-        window.alert("Leaving the store.");
-    
-        // do nothing, so function will end
-        break;
-      default:
-        window.alert("You did not pick a valid option. Try again.");
-    
-        // call shop() again to force player to pick a valid option
-        shop();
-        break;
-     }
-    };
+  // ask player what they'd like to do
+  var shopOptionPrompt = window.prompt(
+    "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one 1 for REFILL, 2 for UPGRADE, or 3 for LEAVE."
+  );
+
+  // convert answer from prompt to an actual number
+  shopOptionPrompt = parseInt(shopOptionPrompt);
+
+  // use switch case to carry out action
+  switch (shopOptionPrompt) {
+    case 1:
+      playerInfo.refillHealth();
+      break;
+    case 2:
+      playerInfo.upgradeAttack();
+      break;
+    case 3:
+      window.alert("Leaving the store.");
+      break;
+    default:
+      window.alert("You did not pick a valid option. Try again.");
+      shop();
+      break;
+  }
+};
 
 // funtion to set name 
 var getPlayerName = function() {
